@@ -22,18 +22,20 @@ async function getNumbers(type) {
 
   try {
     const response = await Promise.race([
-      axios.get(url),
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Timeout')), 500)
-      )
-    ]);
+  axios.get(url, {
+    headers: {
+      Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiZXhwIjoxNzQ3ODkzOTgyLCJpYXQiOjE3NDc4OTM2ODIsImlzcyI6IkFmZm9yZG1lZCIsImp0aSI6ImEwZWY3YmI1LWQ2MjktNGJmZS1iMTA4LWY0NGExNmM3YjI5MSIsInN1YiI6IjIyMDAwMzEzNDJjc2VoQGdtYWlsLmNvbSJ9LCJlbWFpbCI6IjIyMDAwMzEzNDJjc2VoQGdtYWlsLmNvbSIsIm5hbWUiOiJ2YW5kYW5hIHZpbmF5IHNhaSIsInJvbGxObyI6IjIyMDAwMzEzNDIiLCJhY2Nlc3NDb2RlIjoiYmVUSmpKIiwiY2xpZW50SUQiOiJhMGVmN2JiNS1kNjI5LTRiZmUtYjEwOC1mNDRhMTZjN2IyOTEiLCJjbGllbnRTZWNyZXQiOiJXRFVidnB1WFFGRlNoZHpQIn0.YWqbKOK6JQF_G4pl5O-oHnuauhhR4yPEOaB8PVTrtLI'
+    }
+  }),
+  new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('Timeout')), 500)
+  )
+]);
 
     numbers = response.data.numbers;
 
-    // Filter out duplicates
     const uniqueNewNumbers = numbers.filter(n => !numberWindow.includes(n));
 
-    // Update the sliding window
     numberWindow = [...numberWindow, ...uniqueNewNumbers].slice(-windowSize);
 
     const avg =
